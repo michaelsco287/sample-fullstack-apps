@@ -5,16 +5,16 @@ import (
 	"testing"
 )
 
-func TestAddBook(t *testing.T) {
+func TestOwnBook(t *testing.T) {
 	lib := Library{}
 	book := Book{
 		title: "Test",
 	}
-	lib.AddBook(book)
+	lib.OwnBook(book)
 	got := lib.booksOwned
 	want := []Book{book}
 
 	if !reflect.DeepEqual(got, want) {
-		t.Errorf("AddBook(\"%v\"), expected: %#v but got: %#v", book, want, got)
+		t.Errorf("OwnBook(\"%v\"), expected: %#v but got: %#v", book, want, got)
 	}
 }
