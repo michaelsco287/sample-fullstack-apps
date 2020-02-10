@@ -17,18 +17,18 @@ func mockResponse(statusCode int, headers map[string]string, body []byte) {
 func TestFindBookByISBN(t *testing.T) {
 	mockResponse(http.StatusOK, map[string]string{"Content-Type": "application/json"}, []byte(`{
 		"ISBN:9781416590316":{
-		   "publishers":[
+		   "Publishers":[
 			  {
 				 "name":"Simon & Schuster"
 			  }
 		   ],
-		   "title":"Frederick Douglass: Prophet of Freedom",
+		   "Title":"Frederick Douglass: Prophet of Freedom",
 		   "cover":{
 			  "large":"https://covers.openlibrary.org/b/id/8312265-L.jpg",
 		   },
-		   "authors":[
+		   "Authors":[
 			{
-			   "url":"https://openlibrary.org/authors/OL953055A/David_W._Blight",
+			   "url":"https://openlibrary.org/Authors/OL953055A/David_W._Blight",
 			   "name":"David W. Blight"
 			}
 		 ],
@@ -38,11 +38,11 @@ func TestFindBookByISBN(t *testing.T) {
 	ISBN := "9781416590316"
 	got, _ := FindBookByISBN(ISBN)
 	want := Book{
-		title:         "Frederick Douglass: Prophet of Freedom",
-		authors:       []string{"David W. Blight"},
-		publishers:    []string{"Simon & Schuster"},
-		datePublished: "2018",
-		coverURL:      "https://covers.openlibrary.org/b/id/8312265-L.jpg",
+		Title:         "Frederick Douglass: Prophet of Freedom",
+		Authors:       []string{"David W. Blight"},
+		Publishers:    []string{"Simon & Schuster"},
+		DatePublished: "2018",
+		CoverURL:      "https://covers.openlibrary.org/b/id/8312265-L.jpg",
 	}
 	if !reflect.DeepEqual(got, want) {
 		t.Errorf("FindBookByISBN(\"%s\"), expected: %#v but got: %#v", ISBN, want, got)

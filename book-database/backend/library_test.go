@@ -8,7 +8,7 @@ import (
 func TestOwnBook(t *testing.T) {
 	lib := Library{}
 	book := Book{
-		title: "Test",
+		Title: "Test",
 	}
 	lib.OwnBook(book)
 	got := lib.booksOwned
@@ -22,7 +22,7 @@ func TestOwnBook(t *testing.T) {
 func TestWantBook(t *testing.T) {
 	lib := Library{}
 	book := Book{
-		title: "Fave Book",
+		Title: "Fave Book",
 	}
 	lib.WantBook(book)
 	got := lib.booksWanted
