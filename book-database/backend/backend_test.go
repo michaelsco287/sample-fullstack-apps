@@ -6,9 +6,14 @@ import (
 	"net/http/httptest"
 	"testing"
 
+	mockhttp "github.com/karupanerura/go-mock-http-response"
 	"github.com/stretchr/testify/assert"
 )
 
+func mockResponse(statusCode int, headers map[string]string, body []byte) {
+	http.DefaultClient = mockhttp.NewResponseMock(statusCode, headers, body).MakeClient()
+
+}
 func TestPostOwnedBooksRoute_ValidISBN(t *testing.T) {
 	mockResponse(http.StatusOK, map[string]string{"Content-Type": "application/json"}, []byte(`{
 		"ISBN:9781416590316":{

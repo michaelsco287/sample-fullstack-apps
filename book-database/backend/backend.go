@@ -3,15 +3,18 @@ package main
 import (
 	"fmt"
 
+	"github.com/NicksonT/sample-fullstack-apps/book-database/backend/book"
+
+	"github.com/NicksonT/sample-fullstack-apps/book-database/backend/library"
 	"github.com/gin-gonic/gin"
 )
 
 func setupRouter() *gin.Engine {
 	r := gin.Default()
 	r.POST("/ownedbooks", func(c *gin.Context) {
-		lib := Library{}
+		lib := library.Library{}
 		isbn := c.PostForm("isbn")
-		foundBook, err := FindBookByISBN(isbn)
+		foundBook, err := book.FindBookByISBN(isbn)
 		if err != nil {
 			c.String(400, fmt.Sprintf("Invalid ISBN (%v) provided.", isbn))
 			return
@@ -21,7 +24,7 @@ func setupRouter() *gin.Engine {
 	})
 	r.GET("/book", func(c *gin.Context) {
 		isbn := c.Query("isbn")
-		foundBook, err := FindBookByISBN(isbn)
+		foundBook, err := book.FindBookByISBN(isbn)
 		if err != nil {
 			c.String(400, fmt.Sprintf("Invalid ISBN (%v) provided.", isbn))
 			return
