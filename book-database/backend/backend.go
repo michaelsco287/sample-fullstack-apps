@@ -6,11 +6,13 @@ import (
 	"github.com/NicksonT/sample-fullstack-apps/book-database/backend/book"
 
 	"github.com/NicksonT/sample-fullstack-apps/book-database/backend/library"
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 )
 
 func setupRouter() *gin.Engine {
 	r := gin.Default()
+	r.Use(cors.Default())
 	r.POST("/ownedbooks", func(c *gin.Context) {
 		lib := library.Library{}
 		isbn := c.PostForm("isbn")
