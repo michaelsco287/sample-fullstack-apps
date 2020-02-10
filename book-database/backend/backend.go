@@ -11,7 +11,7 @@ func setupRouter() *gin.Engine {
 	r.POST("/ownedbooks", func(c *gin.Context) {
 		lib := Library{}
 		isbn := c.PostForm("isbn")
-		foundBook := FindBookByISBN(isbn)
+		foundBook, _ := FindBookByISBN(isbn)
 		lib.OwnBook(foundBook)
 		c.String(200, fmt.Sprintf("Added \"%s\" to your list of owned books.", foundBook.title))
 	})
