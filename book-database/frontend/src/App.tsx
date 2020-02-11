@@ -1,13 +1,10 @@
 import React, { useState } from "react";
-import Logo from "./vector/isolated-layout.svg";
 import "./App.css";
 import axios from "axios";
-import { Button, Icon, Row, Col, Layout } from "antd";
+import BookInfo from "./BookInfo"
+import { Button, Icon,  Layout, Menu } from "antd";
 import Search from "antd/lib/input/Search";
 const { Header, Footer, Sider, Content } = Layout;
-const logo = () => (
-  <img src={Logo} />
-);
 
 
 function Iconz() {
@@ -39,43 +36,42 @@ const App = () => {
     setBookCover(result.data["CoverURL"]);
     setBookTitle(result.data["Title"]);
     setBookAuthors(result.data["Authors"]);
+    setPage("BookInfo")
   };
   const [bookCover, setBookCover] = useState("empty");
+  const [currentPage, setPage] = useState("Home");
   const [bookAuthors, setBookAuthors] = useState("empty");
   const [bookTitle, setBookTitle] = useState("empty");
 
   return (
     <div className="App">
       <Layout style={{minHeight: '100vh'}}>
-        <Header style={{ background: '#0B173D', padding: 0 }}>
-        <Icon style={{ fontSize: '64px' }}component={Iconz} />
+        <Header style={{ background: '#0B173D', padding: 0, minHeight:'100px'}}>
+        <Icon style={{ fontSize: '100px', }}component={Iconz} />
         </Header>
         <Layout>
-        <Sider style={{background: '#0B173D', overflow: 'auto'}}>          
-          <Search
-            placeholder="Search for a book by its ISBN"
+        <Sider style={{background: '#0B173D', overflow: 'auto'}}>      
+        <Menu
+          mode="inline"
+          defaultSelectedKeys={['1']}
+          defaultOpenKeys={['sub1']}
+          style={{height: '100%', borderRight: 0 }}
+        >
+                  <Search
+            placeholder="Book by ISBN"
             onSearch={value => getBook(value)}
             enterButton
           />
-          <div
-            className="bookInfo"
-            style={{ display: bookCover != "empty" ? "inline-block" : "none", maxWidth: '100%',maxHeight: '100%' }}
-          >
-            <p>{bookTitle}</p>
-            <img src={bookCover} style={{maxWidth: '100%',maxHeight: '100%'}}/>
-            <p>{bookAuthors}</p>
-            <Button> I own this book</Button>
-            <Button>
-              <Icon type="heart" theme="filled" />I want this book
-            </Button>
-          </div></Sider>
-        <Content style ={{background: '#fff'}}>     
-         <div className="div3">
-        <h1>Owned Books</h1>
-      </div>
-      <div className="div4">
-        <h1>Wanted Books</h1>
-      </div></Content>
+          <Menu.Item>Owned Books</Menu.Item>
+          <Menu.Item>Wanted Books</Menu.Item>
+          <Menu.Item>Advanced Search</Menu.Item>
+
+        </Menu>  
+  
+          </Sider>
+        <Content style ={{background: '#fff'}}>  
+        {currentPage == "BookInfo" ? <BookInfo bookCover={bookCover} bookAuthors ={bookAuthors} bookTitle={bookTitle} /> : ""}   
+        </Content>
       </Layout>
         <Footer>Created by Nickson Thanda</Footer>
       </Layout>
