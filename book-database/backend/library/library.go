@@ -5,13 +5,13 @@ import (
 )
 
 type Library struct {
-	booksOwned  []book.Book
-	booksWanted []book.Book
+	BooksOwned  []book.Book
+	BooksWanted []book.Book
 }
 
 func (l *Library) OwnBook(b book.Book) {
-	l.booksOwned = append(l.booksOwned, b)
+	l.BooksOwned = append(l.BooksOwned, b)
 }
 func (l *Library) WantBook(b book.Book) {
-	l.booksWanted = append(l.booksWanted, b)
+	l.BooksWanted = append(l.BooksWanted, b)
 }

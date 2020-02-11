@@ -12,10 +12,14 @@ import (
 
 func setupRouter() *gin.Engine {
 	r := gin.Default()
+	lib := library.Library{}
 	r.Use(cors.Default())
+	r.GET("/ownedbooks", func(c *gin.Context) {
+		c.JSON(200, lib.BooksOwned)
+	})
 	r.POST("/ownedbooks", func(c *gin.Context) {
-		lib := library.Library{}
 		isbn := c.PostForm("isbn")
+		fmt.Printf("ISBN: " + isbn)
 		foundBook, err := book.FindBookByISBN(isbn)
 		if err != nil {
 			c.String(400, fmt.Sprintf("Invalid ISBN (%v) provided.", isbn))
@@ -32,7 +36,7 @@ func setupRouter() *gin.Engine {
 			return
 		}
 		if err != nil {
-			c.String(500, "Issue with server, please try again later")
+			c.String(500, "Issue with server, please try again later.")
 			return
 		}
 		fmt.Print(foundBook)
