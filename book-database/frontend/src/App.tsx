@@ -30,10 +30,7 @@ function Iconz() {
   );}
 
 const App = () => {
-  useEffect( () => { 
-    getOwnedBooks()
-    getWantedBooks()
-  },[])
+
   const getOwnedBooks = () => {
     axios.get(`http://localhost:8080/ownedbooks`)
     .then(
@@ -73,7 +70,10 @@ const App = () => {
   const [currentPage, setPage] = useState("OwnedBooks");
   const [bookAuthors, setBookAuthors] = useState("empty");
   const [bookTitle, setBookTitle] = useState("empty");
-
+  useEffect( () => { 
+    getOwnedBooks()
+    getWantedBooks()
+  },[currentPage])
   return (
     <div className="App">
       <Layout style={{minHeight: '100vh'}}>
