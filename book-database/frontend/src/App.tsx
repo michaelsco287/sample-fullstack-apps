@@ -59,11 +59,12 @@ const App = () => {
     setPage("BookInfo")
   };
 
+
   const handleClick = (e: any) => {
     setPage(e.key)
   };
-  const [ownedBooks, setOwnedBooks] = useState([{CoverURL: ""}])
-  const [wantedBooks, setWantedBooks] = useState([{CoverURL: ""}])
+  const [ownedBooks, setOwnedBooks] = useState([{CoverURL: "", ISBN13: ""}])
+  const [wantedBooks, setWantedBooks] = useState([{CoverURL: "",ISBN13: ""}])
   const [bookISBN13, setBookISBN13] = useState("empty");
   const [loadingIndicator, setLoadingIndicator] = useState(false)
   const [bookCover, setBookCover] = useState("empty");
@@ -112,10 +113,10 @@ const App = () => {
         {currentPage === "BookInfo" ? <BookInfo getWantedBooks={getWantedBooks} getOwnedBooks={getOwnedBooks} bookISBN13={bookISBN13} bookCover={bookCover} bookAuthors ={bookAuthors} bookTitle={bookTitle} ownedBooks={ownedBooks} wantedBooks={wantedBooks} /> : ""}   
         {currentPage === "CurrentlyReading" ? <h1>Books I am currently reading</h1> : ""}
         {currentPage === "OwnedBooks" ? <div><h1>Owned Books</h1> <p>{Object.keys(ownedBooks).map(key => 
-    <img src={ownedBooks[parseInt(key)].CoverURL}></img>
+    <img style={{cursor:'pointer'}} onClick={() => getBook(ownedBooks[parseInt(key)].ISBN13)}src={ownedBooks[parseInt(key)].CoverURL}></img>
 )}</p> </div>: ""}
         {currentPage === "WantedBooks" ? <div><h1>Wanted Books</h1> <p>{Object.keys(wantedBooks).map(key => 
-    <img src={wantedBooks[parseInt(key)].CoverURL}></img>
+    <img style={{cursor:'pointer'}} onClick={() => getBook(wantedBooks[parseInt(key)].ISBN13)} src={wantedBooks[parseInt(key)].CoverURL}></img>
 )}</p> </div>: ""}
         {currentPage === "AdvancedSearch" ? <h1>Advanced Search</h1> : ""}
         </Spin>

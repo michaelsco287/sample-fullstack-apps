@@ -76,7 +76,7 @@ func responseToBook(body string, book *Book) {
 	book.Title = gjson.Get(body, "ISBN*.title").String()
 	book.Authors = []string{gjson.Get(body, "ISBN*.authors.#.name").Array()[0].String()}
 	book.Publishers = []string{gjson.Get(body, "ISBN*.publishers.#.name").Array()[0].String()}
-	book.DatePublished = gjson.Get(body, "ISBN*.publish_date").String()
+	book.DatePublished = checkIfValidElseReturn(body, "ISBN*.publish_date", "")
 	book.CoverURL = gjson.Get(body, "ISBN*.cover.large").String()
 }
 func checkIfValidElseReturn(body, json, def string) string {
