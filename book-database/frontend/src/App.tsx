@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import "./App.css";
 import axios from "axios";
 import BookInfo from "./BookInfo"
-import { Button, Icon,  Layout, Menu } from "antd";
+import { Button, Icon,  Layout, Menu, Spin, Alert } from "antd";
 import Search from "antd/lib/input/Search";
 const { Header, Footer, Sider, Content } = Layout;
 
@@ -32,14 +32,22 @@ function Iconz() {
 const App = () => {
   const getBook = async (value: string) => {
     const isbn: string = value;
+    setLoadingIndicator(true)
     const result = await axios(`http://localhost:8080/book?isbn=${isbn}`);
+    setLoadingIndicator(false)
     setBookCover(result.data["CoverURL"]);
     setBookTitle(result.data["Title"]);
     setBookAuthors(result.data["Authors"]);
     setPage("BookInfo")
   };
+
+  const handleClick = (e: any) => {
+    setPage(e.key)
+  };
+
+  const [LoadingIndicator, setLoadingIndicator] = useState(false)
   const [bookCover, setBookCover] = useState("empty");
-  const [currentPage, setPage] = useState("Home");
+  const [currentPage, setPage] = useState("OwnedBooks");
   const [bookAuthors, setBookAuthors] = useState("empty");
   const [bookTitle, setBookTitle] = useState("empty");
 
@@ -54,7 +62,7 @@ const App = () => {
         <Menu
           mode="inline"
           defaultSelectedKeys={['1']}
-          defaultOpenKeys={['sub1']}
+          onClick={handleClick}
           style={{height: '100%', borderRight: 0 }}
         >
                   <Search
@@ -62,15 +70,28 @@ const App = () => {
             onSearch={value => getBook(value)}
             enterButton
           />
-          <Menu.Item>Owned Books</Menu.Item>
-          <Menu.Item>Wanted Books</Menu.Item>
-          <Menu.Item>Advanced Search</Menu.Item>
+          <Menu.Item key="OwnedBooks">Owned Books</Menu.Item>
+          <Menu.Item key="CurrentlyReeading">Currently Reading</Menu.Item>
+          <Menu.Item key="WantedBooks">Wanted Books</Menu.Item>
+          <Menu.Item key="AdvancedSearch">Advanced Search</Menu.Item>
 
         </Menu>  
   
           </Sider>
         <Content style ={{background: '#fff'}}>  
+        <Spin style={{ margin:"auto",
+  left:"0",
+  right:"0",
+  top:"0",
+  bottom:"0",
+  position:"fixed"}} size="large" tip="Loading..." spinning={LoadingIndicator}>
+
         {currentPage == "BookInfo" ? <BookInfo bookCover={bookCover} bookAuthors ={bookAuthors} bookTitle={bookTitle} /> : ""}   
+        {currentPage == "CurrentlyReading" ? <h1>Books I am currently reading</h1> : ""}
+        {currentPage == "OwnedBooks" ? <h1>Owned Books</h1> : ""}
+        {currentPage == "WantedBooks" ? <h1>Wanted Books</h1> : ""}
+        {currentPage == "AdvancedSearch" ? <h1>Advanced Search</h1> : ""}
+        </Spin>
         </Content>
       </Layout>
         <Footer>Created by Nickson Thanda</Footer>
