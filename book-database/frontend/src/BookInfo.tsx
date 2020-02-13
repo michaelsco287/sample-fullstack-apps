@@ -6,13 +6,14 @@ const BookInfo = (props: any) => {
     const ownClick = async () => {
       setOwnLoadingIndicator(true)
       var bodyFormData : FormData = new FormData();
-      bodyFormData.append("isbn", props.bookISBN)
+      bodyFormData.append("isbn", props.bookISBN13)
       axios({
         method: 'post',
         url: 'http://localhost:8080/ownedbooks',
         data: bodyFormData,
         })
-     setAlertMessage("You have succesfully added this book to your list")
+      setAlertMessage("You have succesfully added this book to your list")
+      props.getOwnedBooks()
       setOwnLoadingIndicator(false)
       setDisabledOwnedButton(true)
 
@@ -21,25 +22,27 @@ const BookInfo = (props: any) => {
     const wantClick = async () => {
       setWantLoadingIndicator(true)
       var bodyFormData : FormData = new FormData();
-      bodyFormData.append("isbn", props.bookISBN)
+      bodyFormData.append("isbn", props.bookISBN13)
       axios({
         method: 'post',
         url: 'http://localhost:8080/wantedbooks',
         data: bodyFormData,
         })
       setAlertMessage("You have succesfully added this book to your list")
+      props.getWantedBooks()
       setWantLoadingIndicator(false)
       setDisabledWantedButton(true)
 
     }
     useEffect( () => {
-      if (props.OwnedBooks.some((e: { bookISBN: any; }) => {
-        return e.bookISBN === props.bookISBN;
+ 
+      if (props.ownedBooks.some((e: { ISBN13: any; }) => {
+        return e.ISBN13 === props.bookISBN13;
       }))
       {
         setDisabledOwnedButton(true)
       }
-      if (props.WantedBooks.some((e: { bookISBN: any; }) => e.bookISBN === props.bookISBN))
+      if (props.wantedBooks.some((e: { ISBN13: any; }) => e.ISBN13 === props.bookISBN13))
       {
         setDisabledWantedButton(true)
       }

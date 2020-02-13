@@ -30,28 +30,32 @@ function Iconz() {
   );}
 
 const App = () => {
-  useEffect( () => {
+  useEffect( () => { 
+    getOwnedBooks()
+    getWantedBooks()
+  },[])
+  const getOwnedBooks = () => {
     axios.get(`http://localhost:8080/ownedbooks`)
     .then(
       function(response) {
-        console.log(response.data)
-        setOwnedBooks( response.data)
+        if (response.data) setOwnedBooks( response.data)
       }
     )
+  }
+  const getWantedBooks = () => {
     axios.get(`http://localhost:8080/wantedbooks`)
     .then(
       function(response) {
-        setWantedBooks(response.data)
+        if (response.data) setWantedBooks( response.data)
       }
     )
-
-  },[])
+  }
   const getBook = async (value: string) => {
     const isbn: string = value;
     setLoadingIndicator(true)
     const result = await axios(`http://localhost:8080/book?isbn=${isbn}`);
     setLoadingIndicator(false)
-    setBookISBN(isbn)
+    setBookISBN13(result.data["ISBN13"])
     setBookCover(result.data["CoverURL"]);
     setBookTitle(result.data["Title"]);
     setBookAuthors(result.data["Authors"]);
@@ -63,7 +67,7 @@ const App = () => {
   };
   const [ownedBooks, setOwnedBooks] = useState([{CoverURL: ""}])
   const [wantedBooks, setWantedBooks] = useState([{CoverURL: ""}])
-  const [bookISBN, setBookISBN] = useState("empty");
+  const [bookISBN13, setBookISBN13] = useState("empty");
   const [loadingIndicator, setLoadingIndicator] = useState(false)
   const [bookCover, setBookCover] = useState("empty");
   const [currentPage, setPage] = useState("OwnedBooks");
@@ -105,7 +109,7 @@ const App = () => {
   bottom:"0",
   position:"fixed"}} size="large" tip="Loading..." spinning={loadingIndicator}>
 
-        {currentPage === "BookInfo" ? <BookInfo bookISBN={bookISBN} bookCover={bookCover} bookAuthors ={bookAuthors} bookTitle={bookTitle} /> : ""}   
+        {currentPage === "BookInfo" ? <BookInfo getWantedBooks={getWantedBooks} getOwnedBooks={getOwnedBooks} bookISBN13={bookISBN13} bookCover={bookCover} bookAuthors ={bookAuthors} bookTitle={bookTitle} ownedBooks={ownedBooks} wantedBooks={wantedBooks} /> : ""}   
         {currentPage === "CurrentlyReading" ? <h1>Books I am currently reading</h1> : ""}
         {currentPage === "OwnedBooks" ? <div><h1>Owned Books</h1> <p>{Object.keys(ownedBooks).map(key => 
     <img src={ownedBooks[parseInt(key)].CoverURL}></img>

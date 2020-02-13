@@ -16,6 +16,8 @@ type Book struct {
 	Publishers    []string
 	DatePublished string
 	CoverURL      string
+	ISBN10        string
+	ISBN13        string
 }
 
 func FindBookByISBN(ISBN string) (Book, error) {
@@ -69,13 +71,20 @@ func isValidISBNFormat(isbn string) bool {
 }
 
 func responseToBook(body string, book *Book) {
+	book.ISBN10 = checkIfValidElseReturn(body, "ISBN*.identifiers.isbn_10", "")
+	book.ISBN13 = checkIfValidElseReturn(body, "ISBN*.identifiers.isbn_13", "")
 	book.Title = gjson.Get(body, "ISBN*.title").String()
 	book.Authors = []string{gjson.Get(body, "ISBN*.authors.#.name").Array()[0].String()}
 	book.Publishers = []string{gjson.Get(body, "ISBN*.publishers.#.name").Array()[0].String()}
 	book.DatePublished = gjson.Get(body, "ISBN*.publish_date").String()
 	book.CoverURL = gjson.Get(body, "ISBN*.cover.large").String()
 }
-
+func checkIfValidElseReturn(body, json, def string) string {
+	if gjson.Get(body, json).Exists() {
+		return gjson.Get(body, json).Array()[0].String()
+	}
+	return def
+}
 func Reverse(s string) string {
 	runes := []rune(s)
 	for i, j := 0, len(runes)-1; i < j; i, j = i+1, j-1 {
