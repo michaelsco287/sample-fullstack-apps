@@ -1,8 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./App.css";
 import axios from "axios";
 import BookInfo from "./BookInfo"
-import { Button, Icon,  Layout, Menu, Spin, Alert } from "antd";
+import {Icon,  Layout, Menu, Spin} from "antd";
 import Search from "antd/lib/input/Search";
 const { Header, Footer, Sider, Content } = Layout;
 
@@ -30,11 +30,28 @@ function Iconz() {
   );}
 
 const App = () => {
+  useEffect( () => {
+    axios.get(`http://localhost:8080/ownedbooks`)
+    .then(
+      function(response) {
+        console.log(response.data)
+        setOwnedBooks( response.data)
+      }
+    )
+    axios.get(`http://localhost:8080/wantedbooks`)
+    .then(
+      function(response) {
+        setWantedBooks(response.data)
+      }
+    )
+
+  },[])
   const getBook = async (value: string) => {
     const isbn: string = value;
     setLoadingIndicator(true)
     const result = await axios(`http://localhost:8080/book?isbn=${isbn}`);
     setLoadingIndicator(false)
+    setBookISBN(isbn)
     setBookCover(result.data["CoverURL"]);
     setBookTitle(result.data["Title"]);
     setBookAuthors(result.data["Authors"]);
@@ -44,8 +61,10 @@ const App = () => {
   const handleClick = (e: any) => {
     setPage(e.key)
   };
-
-  const [LoadingIndicator, setLoadingIndicator] = useState(false)
+  const [ownedBooks, setOwnedBooks] = useState([{CoverURL: ""}])
+  const [wantedBooks, setWantedBooks] = useState([{CoverURL: ""}])
+  const [bookISBN, setBookISBN] = useState("empty");
+  const [loadingIndicator, setLoadingIndicator] = useState(false)
   const [bookCover, setBookCover] = useState("empty");
   const [currentPage, setPage] = useState("OwnedBooks");
   const [bookAuthors, setBookAuthors] = useState("empty");
@@ -71,7 +90,7 @@ const App = () => {
             enterButton
           />
           <Menu.Item key="OwnedBooks">Owned Books</Menu.Item>
-          <Menu.Item key="CurrentlyReeading">Currently Reading</Menu.Item>
+          <Menu.Item key="CurrentlyReading">Currently Reading</Menu.Item>
           <Menu.Item key="WantedBooks">Wanted Books</Menu.Item>
           <Menu.Item key="AdvancedSearch">Advanced Search</Menu.Item>
 
@@ -84,13 +103,17 @@ const App = () => {
   right:"0",
   top:"0",
   bottom:"0",
-  position:"fixed"}} size="large" tip="Loading..." spinning={LoadingIndicator}>
+  position:"fixed"}} size="large" tip="Loading..." spinning={loadingIndicator}>
 
-        {currentPage == "BookInfo" ? <BookInfo bookCover={bookCover} bookAuthors ={bookAuthors} bookTitle={bookTitle} /> : ""}   
-        {currentPage == "CurrentlyReading" ? <h1>Books I am currently reading</h1> : ""}
-        {currentPage == "OwnedBooks" ? <h1>Owned Books</h1> : ""}
-        {currentPage == "WantedBooks" ? <h1>Wanted Books</h1> : ""}
-        {currentPage == "AdvancedSearch" ? <h1>Advanced Search</h1> : ""}
+        {currentPage === "BookInfo" ? <BookInfo bookISBN={bookISBN} bookCover={bookCover} bookAuthors ={bookAuthors} bookTitle={bookTitle} /> : ""}   
+        {currentPage === "CurrentlyReading" ? <h1>Books I am currently reading</h1> : ""}
+        {currentPage === "OwnedBooks" ? <div><h1>Owned Books</h1> <p>{Object.keys(ownedBooks).map(key => 
+    <img src={ownedBooks[parseInt(key)].CoverURL}></img>
+)}</p> </div>: ""}
+        {currentPage === "WantedBooks" ? <div><h1>Wanted Books</h1> <p>{Object.keys(wantedBooks).map(key => 
+    <img src={wantedBooks[parseInt(key)].CoverURL}></img>
+)}</p> </div>: ""}
+        {currentPage === "AdvancedSearch" ? <h1>Advanced Search</h1> : ""}
         </Spin>
         </Content>
       </Layout>

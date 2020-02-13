@@ -19,7 +19,6 @@ func setupRouter() *gin.Engine {
 	})
 	r.POST("/ownedbooks", func(c *gin.Context) {
 		isbn := c.PostForm("isbn")
-		fmt.Printf("ISBN: " + isbn)
 		foundBook, err := book.FindBookByISBN(isbn)
 		if err != nil {
 			c.String(400, fmt.Sprintf("Invalid ISBN (%v) provided.", isbn))
